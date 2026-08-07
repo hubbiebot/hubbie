@@ -1,0 +1,25 @@
+[
+  {
+    "cod": "COD0001",
+    "nome": "produto teste 1",
+    "preco": "999,00",
+    "quantidade": 2,
+    "minimo": 1,
+    "validade": "2026-07-24",
+    "semValidade": false
+  },
+  {
+    "cod": "COD0002",
+    "nome": "PRODUTO TESTE 2",
+    "preco": "999,00",
+    "quantidade": 2,
+    "minimo": 2
+  },
+  {
+    "cod": "COD0003",
+    "nome": "PRODUTO TESTE 3",
+    "preco": "999,00",
+    "quantidade": 4,
+    "minimo": 2
+  }
+]

@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hubbie BOT</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
+    <style>
+        :root { --bg-dark: #0f0f0f; --sidebar-bg: #1a1a1a; --mid-bg: #222222; --accent-red: #42c506; --text-main: #f1f1f1; --text-dim: #a0a0a0; --glass: rgba(255, 255, 255, 0.05); --archived-bg: #2a2a2a; }
+        body { font-family: 'Inter', sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg-dark); color: var(--text-main); overflow: hidden; }
+        
+        #sidebar { width: 280px; background: var(--sidebar-bg); border-right: 1px solid rgba(255,255,255,0.1); padding: 25px 20px; display: flex; flex-direction: column; overflow-y: auto;}
+        .brand { font-size: 1.2rem; font-weight: 800; margin-bottom: 25px; display: flex; align-items: center; gap: 10px; }
+        .brand i { color: var(--accent-red); }
+        .btn-global { width: 100%; padding: 14px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-bottom: 20px; color: white;}
+        .on { background: var(--accent-red); } .off { background: #444; } .error { background: #ff9800; }
+        .wa-status { background: var(--glass); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 10px; margin-top: -10px; margin-bottom: 18px; font-size: 12px; color: var(--text-dim); line-height: 1.35; }
+        .wa-status strong { display: block; color: var(--text-main); font-size: 12px; margin-bottom: 3px; }
+        
+        .menu-btn { background: var(--glass); color: white; border: none; padding: 12px; border-radius: 8px; width: 100%; text-align: left; margin-bottom: 10px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 14px;}
+        .menu-btn:hover { background: rgba(255,255,255,0.1); }
+        
+        .section h4 { font-size: 0.75rem; color: var(--text-dim); margin-top: 20px; margin-bottom: 10px; }
+        .input-group { display: flex; background: var(--glass); padding: 5px; border-radius: 8px; }
+        input, textarea { background: transparent; border: none; color: white; padding: 10px; width: 100%; outline: none; font-family: inherit;}
+        .btn-add { background: var(--text-main); color: black; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; }
+        ul { list-style: none; padding: 0; margin: 0; }
+        li { background: var(--glass); padding: 10px; margin-top: 5px; border-radius: 8px; font-size: 13px; display: flex; justify-content: space-between; align-items: center;}
+        
+        #contact-list { width: 340px; background: var(--mid-bg); border-right: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; }
+        .tabs { display: flex; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .tab { flex: 1; padding: 12px; text-align: center; cursor: pointer; background: transparent; border: none; color: var(--text-dim); font-weight: bold; transition: 0.2s; }
+        .tab.active { color: var(--accent-red); border-bottom: 2px solid var(--accent-red); }
+        .header-title { padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
+        .search-container { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .search-box { width: 100%; padding: 10px; background: var(--glass); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; outline: none; box-sizing: border-box;}
+        
+        .contact-item { padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; display: flex; flex-direction: column; position: relative; }
+        .contact-item:hover, .contact-item.active { background: rgba(255,255,255,0.05); }
+        .contact-name { font-size: 14px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
+        .contact-last { font-size: 12px; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; margin-top: 5px; }
+        .toggle-ia { font-size: 11px; padding: 4px 8px; border-radius: 12px; border: none; cursor: pointer; font-weight: bold; }
+        .toggle-ia.active { background: var(--accent-red); color: white; } .toggle-ia.paused { background: #555; color: var(--text-dim); }
+        .pin-icon { cursor: pointer; font-size: 14px; margin-left: 8px; color: var(--text-dim); transition: 0.2s; }
+        .pin-icon.pinned { color: var(--accent-red); transform: rotate(45deg); }
+        .reabrir-icon { cursor: pointer; font-size: 12px; color: #4caf50; margin-left: 8px; }
+        
+        .tags-display { display: flex; gap: 5px; margin-top: 8px; flex-wrap: wrap; }
+        .tag-badge { color: #fff; font-size: 10px; padding: 3px 8px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); }
+        .tag-badge.header { font-size: 11px; display: inline-flex; align-items: center; gap: 5px; }
+        .tag-badge.header i { cursor: pointer; color: rgba(255,255,255,0.7); margin-left: 5px; }
+        .tag-badge.header i:hover { color: var(--accent-red); }
+
+        #chat-area { flex: 1; display: flex; flex-direction: column; background: var(--bg-dark); position: relative;}
+        #chat-header { padding: 20px; background: var(--sidebar-bg); border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center;}
+        #chat-messages { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .msg { background: var(--mid-bg); padding: 12px 18px; border-radius: 12px; max-width: 60%; font-size: 14px; line-height: 1.4; border-bottom-left-radius: 2px; word-wrap: break-word; overflow-wrap: break-word;}
+        .ia-msg { align-self: flex-end; background: var(--accent-red); border-bottom-left-radius: 12px; border-bottom-right-radius: 2px; }
+        .human-msg { align-self: flex-end; background: #005c4b; border-bottom-left-radius: 12px; border-bottom-right-radius: 2px; }
+        .msg img { max-width: 100%; border-radius: 8px; margin-top: 5px; }
+        .attendance-alert { margin-top: 8px; padding: 8px 10px; border-radius: 8px; background: rgba(255, 152, 0, 0.18); border: 1px solid rgba(255, 152, 0, 0.5); color: #ffd28a; font-size: 12px; font-weight: bold; }
+        .attendance-alert-row { align-self: center; width: min(620px, 92%); box-sizing: border-box; padding: 12px 14px; border-radius: 8px; background: rgba(255, 152, 0, 0.16); border: 1px solid rgba(255, 152, 0, 0.55); color: #ffd28a; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        .attendance-alert-row small { display: block; color: var(--text-dim); font-weight: 500; margin-top: 3px; line-height: 1.35; }
+        
+        #chat-input-area { display: none; padding: 15px 20px; background: var(--sidebar-bg); border-top: 1px solid rgba(255,255,255,0.1); gap: 10px; align-items: center; position: relative;}
+        #manual-msg-input { flex: 1; background: var(--mid-bg); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; padding: 14px; outline: none; }
+        emoji-picker { display: none; position: absolute; bottom: 80px; left: 20px; z-index: 1000; --background: var(--mid-bg); --border-color: rgba(255,255,255,0.1); --indicator-color: var(--accent-red); --input-font-color: white;}
+        
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 99; backdrop-filter: blur(3px); }
+        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 450px; max-height: 90vh; background: var(--sidebar-bg); z-index: 100; padding: 30px; box-sizing: border-box; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 40px rgba(0,0,0,0.8); overflow-y: auto; }
+        .modal h2 { margin-top: 0; color: var(--text-main); font-size: 18px; margin-bottom: 20px;}
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 12px; color: var(--text-dim); margin-bottom: 5px; }
+        .form-group input, .form-group textarea { background: var(--mid-bg); border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); }
+        .btn-submit { background: var(--accent-red); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px;}
+        .btn-cancel { background: transparent; color: var(--text-dim); border: 1px solid var(--text-dim); padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px;}
+        .btn-secondary { background: #444; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 12px; }
+        .modal-large { width: 850px; }
+        .stock-table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 13px; }
+        .stock-table th, .stock-table td { border-bottom: 1px solid rgba(255,255,255,0.1); padding: 12px; text-align: left; }
+        .stock-expired { background: rgba(230, 57, 70, 0.14); }
+        .stock-warning { background: rgba(255, 152, 0, 0.12); }
+        .validade-status { font-size: 12px; color: var(--text-dim); }
+        .validade-status.alerta { color: #ffd28a; font-weight: bold; }
+        .validade-status.vencido { color: #ff8a8a; font-weight: bold; }
+        .stock-alert-box { display: none; background: rgba(255, 152, 0, 0.14); border: 1px solid rgba(255, 152, 0, 0.45); color: #ffd28a; padding: 10px 12px; border-radius: 8px; margin-bottom: 15px; font-size: 12px; line-height: 1.4; }
+        .checkbox-row { display: flex; align-items: center; gap: 8px; color: var(--text-dim); font-size: 12px; padding: 0 4px; }
+        .checkbox-row input { width: auto; padding: 0; }
+        
+        .empty-state { text-align: center; padding: 40px; color: var(--text-dim); font-size: 14px; }
+        .empty-chat { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: var(--text-dim); text-align: center; }
+        .empty-chat i { font-size: 64px; margin-bottom: 20px; opacity: 0.3; }
+        .empty-chat p { font-size: 16px; }
+    </style>
+</head>
+<body>
+
+    <div id="modal-overlay" class="modal-overlay" onclick="closeAllModals()"></div>
+
+    <div id="sidebar">
+        <div class="brand"><i class="fas fa-bolt"></i> Hubbie BOT</div>
+        
+        <button id="btnGlobal" class="btn-global off" onclick="socket.emit('toggle-global', !statusLigado)">CARREGANDO...</button>
+        <div id="wa-status" class="wa-status"><strong>WhatsApp</strong><span>Iniciando...</span></div>
+
+        <button class="menu-btn" onclick="openModal('modal-config')"><i class="fas fa-robot"></i> Config. da IA (Prompt)</button>
+        <button class="menu-btn" onclick="openModal('modal-estoque')"><i class="fas fa-boxes"></i> Gestão de Estoque</button>
+        <button class="menu-btn" onclick="openModal('modal-disparo')"><i class="fas fa-bullhorn"></i> Disparo em Massa</button>
+        <button class="menu-btn" onclick="openModal('modal-lembrete')"><i class="fas fa-clock"></i> Agendar Lembrete</button>
+        
+        <div class="section">
+            <h4>BLACKLIST</h4>
+            <div class="input-group">
+                <input type="text" id="inBlack" placeholder="DDD+Número">
+                <button class="btn-add" onclick="addBlack()"><i class="fas fa-plus"></i></button>
+            </div>
+            <ul id="ul-black"></ul>
+        </div>
+        
+        <a href="/logout" style="color: var(--text-dim); margin-top: auto; font-size: 12px; text-decoration: none;"><i class="fas fa-sign-out-alt"></i> Sair</a>
+    </div>
+
+    <div id="contact-list">
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('active')">📋 Ativas</button>
+            <button class="tab" onclick="switchTab('archived')">📦 Arquivadas</button>
+        </div>
+        <div class="header-title">
+            <span id="tab-title">Conversas Ativas</span>
+            <button class="btn-add" style="padding: 4px 12px;" onclick="abrirModalAddContato()"><i class="fas fa-plus"></i> Add Contato</button>
+        </div>
+        <div class="search-container"><input type="text" id="search-contacts" class="search-box" placeholder="Buscar na lista..." onkeyup="filtrarContatos()"></div>
+        <div id="contacts-container" style="overflow-y: auto; flex: 1;"></div>
+    </div>
+
+    <div id="chat-area">
+        <div id="chat-header">
+            <div>
+                <strong id="chat-header-name" style="font-size: 16px;">Selecione um contato</strong>
+                <div id="chat-header-tags" class="tags-display"></div>
+            </div>
+            <div id="chat-header-actions" style="display: none; gap: 8px;">
+                <button class="btn-secondary" style="background: #444;" onclick="addTagPrompt()">🏷️ Add Tag</button>
+                <button class="btn-secondary" style="background: #444;" onclick="exportarConversa()"><i class="fas fa-download"></i> Exportar</button>
+                <button class="btn-secondary" style="background: #5a2a2a;" onclick="fecharChat()">❌ Fechar</button>
+                <button class="btn-secondary" style="background: #2a5a2a;" onclick="arquivarConversa()">📦 Arquivar</button>
+            </div>
+        </div>
+        <div id="chat-messages" class="chat-messages">
+            <div id="empty-chat-state" class="empty-chat" style="display: flex;">
+                <i class="fas fa-comments"></i>
+                <p>Nenhuma conversa selecionada<br><span style="font-size: 12px;">Clique em um contato na lista ao lado para começar</span></p>
+            </div>
+        </div>
+        <emoji-picker id="emoji-picker"></emoji-picker>
+        <div id="chat-input-area" style="display: none;">
+            <button class="btn-submit" style="width: auto; margin: 0; padding: 14px 18px; background: #444;" onclick="document.getElementById('file-input').click()" title="Anexar arquivo"><i class="fas fa-paperclip"></i></button>
+            <input type="file" id="file-input" style="display: none;" onchange="anexarArquivo(this)">
+            <button class="btn-submit" style="width: auto; margin: 0; padding: 14px 18px; background: #444;" onclick="toggleEmojiPicker()" title="Emojis"><i class="fas fa-smile"></i></button>
+            <input type="text" id="manual-msg-input" placeholder="Escreva a mensagem..." onkeypress="if(event.key === 'Enter') enviarMensagemManual()">
+            <button class="btn-submit" style="width: auto; margin: 0; padding: 14px 22px;" onclick="enviarMensagemManual()"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <div id="modal-config" class="modal modal-large">
+        <h2><i class="fas fa-robot"></i> Inteligência Artificial (Regras)</h2>
+        <p style="font-size: 12px; color: var(--text-dim);">Edite aqui o endereço, PIX, regras de entrega e o modo como o bot deve se comportar.</p>
+        <div class="form-group">
+            <textarea id="prompt-txt" rows="20" style="font-size: 13px; line-height: 1.5;"></textarea>
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <button class="btn-cancel" onclick="closeAllModals()">Cancelar</button>
+            <button class="btn-submit" onclick="salvarPrompt()">Salvar Alterações</button>
+        </div>
+    </div>
+
+    <div id="modal-estoque" class="modal modal-large">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="margin: 0;"><i class="fas fa-boxes"></i> Controle de Estoque</h2>
+            <button class="btn-cancel" style="width: auto; margin: 0; padding: 8px 15px;" onclick="limparFormEstoque()">+ Novo Produto</button>
+        </div>
+        <div id="alertas-validade" class="stock-alert-box"></div>
+        <div style="background: var(--glass); padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                <input type="text" id="est-cod" placeholder="Código (Ex: M4T001)" style="flex:0.5;">
+                <input type="text" id="est-nome" placeholder="Produto (Ex: Vela de Ignição)" style="flex:2;">
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="est-preco" placeholder="Preço (Ex: 25,00)" style="flex:1;">
+                <input type="number" id="est-qtd" placeholder="Qtd. Atual" style="flex:1;">
+                <input type="number" id="est-min" placeholder="Estoque Mínimo" style="flex:1;">
+                <button class="btn-submit" style="margin:0; width: auto;" onclick="salvarProdutoEstoque()">Salvar</button>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center; margin-top: 10px;">
+                <input type="date" id="est-validade" style="flex:1;">
+                <label class="checkbox-row" style="flex:1;">
+                    <input type="checkbox" id="est-sem-validade" onchange="toggleSemValidade()">
+                    Produto sem data de validade
+                </label>
+            </div>
+        </div>
+        <input type="text" id="busca-estoque" placeholder="Buscar produto na tabela..." onkeyup="renderizarTabelaEstoque()" style="margin-bottom: 10px;">
+        <div style="max-height: 300px; overflow-y: auto;">
+            <table class="stock-table">
+                <thead>
+                    <tr><th>Cód.</th><th>Produto</th><th>R$</th><th>Qtd</th><th>Mín.</th><th>Validade</th><th>Ações</th></tr>
+                </thead>
+                <tbody id="tbody-estoque"></tbody>
+            </table>
+        </div>
+        <button class="btn-cancel" onclick="closeAllModals()">Fechar</button>
+    </div>
+
+    <div id="modal-disparo" class="modal">
+        <h2>Disparo em Massa</h2>
+        <textarea id="disp-nums" rows="5" placeholder="Números (um por linha ou separados por vírgula)"></textarea>
+        <textarea id="disp-msg" rows="5" placeholder="Mensagem"></textarea>
+        <button class="btn-submit" onclick="enviarDisparo()">Disparar</button>
+        <button class="btn-cancel" onclick="closeAllModals()">Fechar</button>
+    </div>
+    
+    <div id="modal-lembrete" class="modal">
+        <h2>Agendar Lembrete</h2>
+        <input type="text" id="lemb-num" placeholder="Número do WhatsApp">
+        <input type="datetime-local" id="lemb-data">
+        <textarea id="lemb-msg" rows="3" placeholder="Mensagem do lembrete"></textarea>
+        <button class="btn-submit" onclick="agendarLembrete()">Agendar</button>
+        <button class="btn-cancel" onclick="closeAllModals()">Fechar</button>
+        <h4 style="margin-top: 20px;">Lembretes Ativos</h4>
+        <ul id="ul-lembretes-ativos" style="margin-top: 10px;"></ul>
+    </div>
+
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script>
+        const socket = io(window.location.origin);
+        let statusLigado = true; 
+        let contatosAtivos = {}; 
+        let conversasArquivadas = [];
+        let pausados = new Set(); 
+        let contatoSelecionado = null; 
+        let estoqueLocal = []; 
+        let tagsGlobal = {};
+        let fixados = [];
+        let coresTags = {};
+        let abaAtual = 'active';
+
+        function textoSemHtml(valor) {
+            const temp = document.createElement('div');
+            temp.innerHTML = valor || '';
+            return temp.textContent || temp.innerText || '';
+        }
+
+        function mensagemPrecisaAtendente(mensagem) {
+            if (mensagem?.precisaAtendente) return true;
+            return !!mensagem?.isIA && /atendente|humano|equipe|respons[aá]vel|vendedor|suporte/i.test(textoSemHtml(mensagem?.body || ''));
+        }
+
+        function nomeArquivoSeguro(texto) {
+            return (texto || 'conversa').replace(/[\\/:*?"<>|]+/g, '-').replace(/\s+/g, ' ').trim().substring(0, 60) || 'conversa';
+        }
+
+        socket.on('connect', () => document.getElementById('btnGlobal').innerText = 'CONECTADO');
+        socket.on('connect_error', () => { const b = document.getElementById('btnGlobal'); b.innerText = 'ERRO DE CONEXÃO'; b.className = "btn-global error"; });
+        socket.on('config-atual', d => { statusLigado = d.ligado; const b = document.getElementById('btnGlobal'); b.innerText = statusLigado ? 'IA GLOBAL: LIGADA' : 'IA GLOBAL: DESLIGADA'; b.className = statusLigado ? "btn-global on" : "btn-global off"; });
+        socket.on('whatsapp-status', d => {
+            const el = document.getElementById('wa-status');
+            if (el) el.innerHTML = `<strong>WhatsApp: ${d.estado}</strong><span>${d.detalhe}</span>`;
+        });
+        socket.on('atualizar-fixados', lista => { fixados = lista; renderContacts(); });
+        socket.on('atualizar-cores-tags', cores => { coresTags = cores; renderContacts(); if (contatoSelecionado) atualizarHeaderTags(); });
+        socket.on('atualizar-arquivadas', lista => { conversasArquivadas = lista; renderContacts(); });
+        socket.on('contato-adicionado', (contato) => { selectContact(contato.id); renderContacts(); });
+        socket.on('conversa-fechada', (id) => {
+            if (contatoSelecionado === id) {
+                limparChatAberto();
+            }
+        });
+
+        function limparChatAberto() {
+            contatoSelecionado = null;
+            document.getElementById('chat-header-name').innerText = 'Selecione um contato';
+            document.getElementById('chat-header-actions').style.display = 'none';
+            document.getElementById('chat-input-area').style.display = 'none';
+            document.getElementById('chat-header-tags').innerHTML = '';
+            
+            const messagesContainer = document.getElementById('chat-messages');
+            messagesContainer.innerHTML = `
+                <div id="empty-chat-state" class="empty-chat" style="display: flex;">
+                    <i class="fas fa-comments"></i>
+                    <p>Nenhuma conversa selecionada<br><span style="font-size: 12px;">Clique em um contato na lista ao lado para começar</span></p>
+                </div>
+            `;
+            renderContacts();
+        }
+
+        function fecharChat() {
+            if (contatoSelecionado) {
+                if (confirm('Deseja fechar esta conversa? O histórico será mantido e você pode reabri-la clicando no contato novamente.')) {
+                    socket.emit('fechar-conversa', contatoSelecionado);
+                    limparChatAberto();
+                }
+            }
+        }
+
+        function arquivarConversa() {
+            if (contatoSelecionado && !conversasArquivadas.includes(contatoSelecionado)) {
+                if (confirm('Deseja arquivar esta conversa? Ela será movida para a aba "Arquivadas".')) {
+                    socket.emit('arquivar-conversa', contatoSelecionado);
+                    limparChatAberto();
+                    if (abaAtual === 'active') renderContacts();
+                }
+            }
+        }
+
+        function exportarConversa() {
+            if (!contatoSelecionado || !contatosAtivos[contatoSelecionado]) {
+                return alert('Selecione uma conversa para exportar.');
+            }
+
+            const conversa = contatosAtivos[contatoSelecionado];
+            const nome = conversa.nome?.replace('@c.us','') || contatoSelecionado.replace('@c.us','');
+            const linhas = [
+                `Conversa exportada - Hubbie BOT`,
+                `Contato: ${nome}`,
+                `ID: ${contatoSelecionado}`,
+                `Data da exportacao: ${new Date().toLocaleString('pt-BR')}`,
+                '',
+                'Mensagens:',
+                ''
+            ];
+
+            (conversa.msgs || []).forEach(m => {
+                const autor = m.isIA ? 'Assistente' : (m.isHuman ? 'Voce' : (m.from || nome));
+                const aviso = mensagemPrecisaAtendente(m) ? ' [PRECISA DE ATENDENTE]' : '';
+                linhas.push(`[${autor}]${aviso} ${textoSemHtml(m.body || '[Arquivo]')}`);
+            });
+
+            const blob = new Blob([linhas.join('\n')], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${nomeArquivoSeguro(nome)}-${new Date().toISOString().slice(0,10)}.txt`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        function switchTab(tab) {
+            abaAtual = tab;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            if (tab === 'active') {
+                document.querySelector('.tab:first-child').classList.add('active');
+                document.getElementById('tab-title').innerText = 'Conversas Ativas';
+            } else {
+                document.querySelector('.tab:last-child').classList.add('active');
+                document.getElementById('tab-title').innerText = 'Conversas Arquivadas';
+            }
+            limparChatAberto();
+            renderContacts();
+        }
+
+        function reabrirConversa(id) {
+            socket.emit('reabrir-conversa', id);
+            selectContact(id);
+            if (abaAtual === 'archived') switchTab('active');
+        }
+
+        function abrirModalAddContato() {
+            const numero = prompt("Digite o número do WhatsApp (com DDD, sem espaços):\nEx: 37999999999", "");
+            if (numero && numero.trim() !== '') socket.emit('adicionar-contato', numero.trim());
+        }
+
+        function anexarArquivo(input) {
+            if (input.files && input.files[0] && contatoSelecionado) {
+                const file = input.files[0];
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const base64 = e.target.result.split(',')[1];
+                    const type = file.type;
+                    socket.emit('enviar-mensagem-manual', {
+                        id: contatoSelecionado,
+                        mensagem: '',
+                        mediaData: base64,
+                        mediaType: type,
+                        mediaFilename: file.name
+                    });
+                };
+                reader.readAsDataURL(file);
+                input.value = '';
+            }
+        }
+
+        function fixarChat(id) {
+            if (fixados.includes(id)) socket.emit('desfixar-chat', id);
+            else socket.emit('fixar-chat', id);
+        }
+
+        function addBlack() { const i = document.getElementById('inBlack'); if(i.value) { socket.emit('add-lista-negra', i.value); i.value = ''; } }
+        socket.on('atualizar-lista-negra', l => { const ul = document.getElementById('ul-black'); if(ul) ul.innerHTML = l.map(n => `<li>${n} <i class="fas fa-trash" onclick="socket.emit('remove-lista-negra','${n}')" style="cursor:pointer;color:var(--accent-red);"></i></li>`).join(''); });
+
+        socket.on('carregar-config-prompt', (txt) => { document.getElementById('prompt-txt').value = txt; });
+        function salvarPrompt() { socket.emit('salvar-config-prompt', document.getElementById('prompt-txt').value); closeAllModals(); alert('Regras da IA atualizadas com sucesso!'); }
+
+        socket.on('atualizar-tags-geral', (dados) => { tagsGlobal = dados; renderContacts(); if (contatoSelecionado) atualizarHeaderTags(); });
+        
+        function addTagPrompt() {
+            if (!contatoSelecionado) return;
+            const novaTag = prompt("Digite o nome da Etiqueta (Ex: VIP, Orçamento, Aguardando Peça):");
+            if (novaTag && novaTag.trim() !== '') {
+                const cor = prompt("Digite a cor (ex: #e63946, red, blue) ou deixe vazio para padrão:", "#e63946");
+                socket.emit('adicionar-tag-cor', { id: contatoSelecionado, tag: novaTag.trim().toUpperCase(), cor: cor || "#e63946" });
+            }
+        }
+        
+        function removerTag(tag) { if (contatoSelecionado) socket.emit('remover-tag', { id: contatoSelecionado, tag: tag }); }
+
+        function atualizarHeaderTags() {
+            const container = document.getElementById('chat-header-tags'); 
+            if(!container) return;
+            container.innerHTML = '';
+            if (tagsGlobal[contatoSelecionado]) {
+                tagsGlobal[contatoSelecionado].forEach(t => {
+                    const cor = (coresTags[contatoSelecionado] && coresTags[contatoSelecionado][t]) || '#e63946';
+                    container.innerHTML += `<span class="tag-badge header" style="background: ${cor};">${t} <i class="fas fa-times" onclick="removerTag('${t}')"></i></span>`;
+                });
+            }
+        }
+
+        socket.on('atualizar-estoque-tabela', lista => { estoqueLocal = lista; renderizarTabelaEstoque(); });
+        
+        function limparFormEstoque() {
+            document.getElementById('est-cod').value = '';
+            document.getElementById('est-nome').value = '';
+            document.getElementById('est-preco').value = '';
+            document.getElementById('est-qtd').value = '';
+            document.getElementById('est-min').value = '';
+            document.getElementById('est-validade').value = '';
+            document.getElementById('est-sem-validade').checked = false;
+            toggleSemValidade();
+        }
+
+        function toggleSemValidade() {
+            const semValidade = document.getElementById('est-sem-validade').checked;
+            const campoValidade = document.getElementById('est-validade');
+            campoValidade.disabled = semValidade;
+            if (semValidade) campoValidade.value = '';
+        }
+
+        function editarProduto(cod) {
+            const p = estoqueLocal.find(x => x.cod === cod);
+            if(p) {
+                document.getElementById('est-cod').value = p.cod;
+                document.getElementById('est-nome').value = p.nome;
+                document.getElementById('est-preco').value = p.preco;
+                document.getElementById('est-qtd').value = p.quantidade;
+                document.getElementById('est-min').value = p.minimo;
+                document.getElementById('est-validade').value = p.validade || '';
+                document.getElementById('est-sem-validade').checked = !!p.semValidade || !p.validade;
+                toggleSemValidade();
+            }
+        }
+
+        function statusValidadeProduto(p) {
+            if (p.semValidade || !p.validade) return { texto: 'Sem validade', classe: '' };
+            const hoje = new Date();
+            hoje.setHours(0, 0, 0, 0);
+            const validade = new Date(`${p.validade}T00:00:00`);
+            if (Number.isNaN(validade.getTime())) return { texto: 'Sem validade', classe: '' };
+            const dataFormatada = validade.toLocaleDateString('pt-BR');
+            if (validade < hoje) return { texto: `Vencido em ${dataFormatada}`, classe: 'vencido' };
+            if (validade.getTime() === hoje.getTime()) return { texto: `Vence hoje (${dataFormatada})`, classe: 'alerta' };
+            return { texto: dataFormatada, classe: '' };
+        }
+
+        function renderizarAlertasValidade() {
+            const box = document.getElementById('alertas-validade');
+            if (!box) return;
+            const produtosComAlerta = estoqueLocal
+                .map(p => ({ produto: p, validade: statusValidadeProduto(p) }))
+                .filter(item => item.validade.classe === 'vencido' || item.validade.classe === 'alerta');
+
+            if (produtosComAlerta.length === 0) {
+                box.style.display = 'none';
+                box.innerHTML = '';
+                return;
+            }
+
+            box.style.display = 'block';
+            box.innerHTML = `<strong><i class="fas fa-triangle-exclamation"></i> Avisos de validade</strong><br>` +
+                produtosComAlerta.map(item => `${item.produto.cod} - ${item.produto.nome}: ${item.validade.texto}`).join('<br>');
+        }
+
+        function renderizarTabelaEstoque() {
+            const tbody = document.getElementById('tbody-estoque'); 
+            const termo = document.getElementById('busca-estoque')?.value.toLowerCase() || "";
+            if(!tbody) return;
+            renderizarAlertasValidade();
+            tbody.innerHTML = estoqueLocal.filter(p => p.nome?.toLowerCase().includes(termo) || p.cod?.toLowerCase().includes(termo)).map(p => {
+                const validade = statusValidadeProduto(p);
+                const classeLinha = validade.classe === 'vencido' ? 'stock-expired' : (validade.classe === 'alerta' ? 'stock-warning' : '');
+                return `<tr class="${classeLinha}">
+                    <td><strong>${p.cod || ''}</strong></td>
+                    <td>${p.nome || ''}</td>
+                    <td>R$ ${p.preco || '0'}</td>
+                    <td>${p.quantidade || 0}</td>
+                    <td>${p.minimo || 0}</td>
+                    <td><span class="validade-status ${validade.classe}">${validade.texto}</span></td>
+                    <td>
+                        <i class="fas fa-edit" style="color:var(--text-dim); cursor:pointer; margin-right: 15px;" onclick="editarProduto('${p.cod}')" title="Editar"></i>
+                        <i class="fas fa-trash" style="color:var(--accent-red); cursor:pointer;" onclick="if(confirm('Tem certeza?')) socket.emit('excluir-produto','${p.cod}')" title="Excluir"></i>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        function salvarProdutoEstoque() {
+            const cod = document.getElementById('est-cod').value.trim().toUpperCase(); 
+            const nome = document.getElementById('est-nome').value.trim().toLowerCase();
+            const preco = document.getElementById('est-preco').value.trim(); 
+            const qtd = parseInt(document.getElementById('est-qtd').value) || 0; 
+            const min = parseInt(document.getElementById('est-min').value) || 0;
+            const semValidade = document.getElementById('est-sem-validade').checked;
+            const validade = semValidade ? '' : document.getElementById('est-validade').value;
+            if(!cod || !nome) return alert("Código e Nome são obrigatórios!");
+            if(!semValidade && !validade) return alert("Informe a data de validade ou marque 'Produto sem data de validade'.");
+            socket.emit('salvar-produto', { cod, nome, preco, quantidade: qtd, minimo: min, validade, semValidade });
+            limparFormEstoque();
+        }
+
+        socket.on('atualizar-lembretes', lembretes => {
+            const ul = document.getElementById('ul-lembretes-ativos');
+            if(ul) ul.innerHTML = lembretes.map(l => `<li>${new Date(l.dataHora).toLocaleString()} - ${l.numero}<br><small>${l.mensagem.substring(0,50)}...</small> <i class="fas fa-trash" onclick="socket.emit('cancelar-lembrete','${l.id}')" style="cursor:pointer;color:var(--accent-red);"></i></li>`).join('');
+        });
+
+        function agendarLembrete() {
+            const numero = document.getElementById('lemb-num').value;
+            const dataHora = document.getElementById('lemb-data').value;
+            const mensagem = document.getElementById('lemb-msg').value;
+            if(numero && dataHora && mensagem) {
+                socket.emit('agendar-lembrete', { numero, dataHora, mensagem });
+                document.getElementById('lemb-num').value = '';
+                document.getElementById('lemb-data').value = '';
+                document.getElementById('lemb-msg').value = '';
+            } else alert("Preencha todos os campos!");
+        }
+
+        function enviarDisparo() {
+            const numeros = document.getElementById('disp-nums').value;
+            const mensagem = document.getElementById('disp-msg').value;
+            if(numeros && mensagem) {
+                socket.emit('enviar-disparo', { numeros, mensagem });
+                alert("Disparo iniciado!");
+            } else alert("Preencha números e mensagem!");
+        }
+
+        socket.on('atualizar-pausados', lista => { pausados = new Set(lista); renderContacts(); });
+        socket.on('contato-info', d => { if(contatosAtivos[d.id]) { contatosAtivos[d.id].nome = d.name; renderContacts(); if(contatoSelecionado === d.id) document.getElementById('chat-header-name').innerText = d.name; } });
+        
+        socket.on('nova-msg', d => { 
+            if (!contatosAtivos[d.id]) contatosAtivos[d.id] = { nome: d.from, msgs: [], lastMsg: '' }; 
+            else if (d.from && !d.isHuman && !d.isIA && d.from !== 'Assistente' && d.from !== 'Você') contatosAtivos[d.id].nome = d.from; 
+            
+            contatosAtivos[d.id].lastMsg = mensagemPrecisaAtendente(d) ? 'Atenção: precisa de atendente' : (d.isHuman ? `Você: ${d.body}` : (d.isIA ? `Assistente: ${d.body}` : `${d.from}: ${d.body}`));
+            if (!contatosAtivos[d.id].msgs) contatosAtivos[d.id].msgs = [];
+            contatosAtivos[d.id].msgs.push(d); 
+            
+            if (conversasArquivadas.includes(d.id)) {
+                socket.emit('reabrir-conversa', d.id);
+                if (abaAtual === 'archived') switchTab('active');
+            }
+            
+            renderContacts(); 
+            if (contatoSelecionado === d.id) renderChat(d.id); 
+        });
+
+        function filtrarContatos() { const t = document.getElementById('search-contacts').value.toLowerCase(); document.querySelectorAll('.contact-item').forEach(i => i.style.display = i.innerText.toLowerCase().includes(t) ? 'flex' : 'none'); }
+        
+        function renderContacts() { 
+            const container = document.getElementById('contacts-container'); 
+            if (!container) return; 
+            container.innerHTML = ''; 
+            
+            let idsParaExibir = [];
+            if (abaAtual === 'active') {
+                idsParaExibir = Object.keys(contatosAtivos).filter(id => !conversasArquivadas.includes(id));
+            } else {
+                idsParaExibir = conversasArquivadas.filter(id => contatosAtivos[id]);
+            }
+            
+            const fixadosOrdenados = idsParaExibir.filter(id => fixados.includes(id));
+            const naoFixados = idsParaExibir.filter(id => !fixados.includes(id));
+            naoFixados.sort((a,b) => {
+                const dateA = contatosAtivos[a].msgs?.[contatosAtivos[a].msgs.length-1]?.timestamp || 0;
+                const dateB = contatosAtivos[b].msgs?.[contatosAtivos[b].msgs.length-1]?.timestamp || 0;
+                return dateB - dateA;
+            });
+            const idsOrdenados = [...fixadosOrdenados, ...naoFixados];
+            
+            if (idsOrdenados.length === 0) {
+                container.innerHTML = '<div class="empty-state">Nenhuma conversa nesta aba</div>';
+                return;
+            }
+            
+            for(let id of idsOrdenados) { 
+                const c = contatosAtivos[id]; 
+                const isPaused = pausados.has(id); 
+                const isFixed = fixados.includes(id);
+                let tagsHTML = '';
+                if(tagsGlobal[id] && tagsGlobal[id].length > 0) {
+                    tagsHTML = `<div class="tags-display">` + tagsGlobal[id].map(t => {
+                        const cor = (coresTags[id] && coresTags[id][t]) || '#e63946';
+                        return `<span class="tag-badge" style="background: ${cor};">${t}</span>`;
+                    }).join('') + `</div>`;
+                }
+
+                const div = document.createElement('div'); 
+                div.className = `contact-item ${contatoSelecionado === id ? 'active' : ''}`; 
+                div.onclick = (e) => { 
+                    if(!e.target.classList.contains('toggle-ia') && !e.target.classList.contains('pin-icon') && !e.target.classList.contains('reabrir-icon')) {
+                        if (abaAtual === 'archived') {
+                            reabrirConversa(id);
+                        } else {
+                            selectContact(id);
+                        }
+                    } 
+                }; 
+                
+                const nomeExibido = c.nome?.replace('@c.us','') || id.replace('@c.us','');
+                
+                div.innerHTML = `
+                    <div class="contact-name">
+                        <span style="display: flex; align-items: center; gap: 5px;">
+                            ${nomeExibido}
+                            ${abaAtual === 'active' ? `<i class="fas fa-thumbtack pin-icon ${isFixed ? 'pinned' : ''}" onclick="event.stopPropagation(); fixarChat('${id}')"></i>` : ''}
+                            ${abaAtual === 'archived' ? `<i class="fas fa-undo-alt reabrir-icon" onclick="event.stopPropagation(); reabrirConversa('${id}')" title="Reabrir conversa"></i>` : ''}
+                        </span>
+                        ${abaAtual === 'active' ? `<button class="toggle-ia ${isPaused ? 'paused' : 'active'}" onclick="event.stopPropagation(); socket.emit('toggle-contato-ia', '${id}')">${isPaused ? 'IA OFF' : 'IA ON'}</button>` : ''}
+                    </div>
+                    ${tagsHTML}
+                    <div class="contact-last">${c.lastMsg || 'Sem mensagens'}</div>
+                `; 
+                container.appendChild(div); 
+            } 
+            filtrarContatos(); 
+        }
+
+        function selectContact(id) { 
+            contatoSelecionado = id; 
+            document.getElementById('chat-header-name').innerText = contatosAtivos[id]?.nome?.replace('@c.us','') || id.replace('@c.us',''); 
+            document.getElementById('chat-input-area').style.display = 'flex'; 
+            document.getElementById('chat-header-actions').style.display = 'flex';
+            atualizarHeaderTags();
+            renderContacts(); 
+            renderChat(id); 
+            socket.emit('iniciar-conversa-manual', id);
+        }
+
+        function renderChat(id) { 
+            const container = document.getElementById('chat-messages'); 
+            if(!container) return; 
+            container.innerHTML = ''; 
+            if(!contatosAtivos[id]?.msgs) return;
+            contatosAtivos[id].msgs.forEach(m => { 
+                let cl = ''; 
+                if(m.isIA) cl = 'ia-msg'; 
+                if(m.isHuman) cl = 'human-msg'; 
+                if (mensagemPrecisaAtendente(m)) {
+                    const detalhe = textoSemHtml(m.body || '').trim();
+                    container.innerHTML += `<div class="attendance-alert-row"><i class="fas fa-headset"></i><div>Atenção: esta conversa precisa de um atendente.${detalhe ? `<small>${detalhe}</small>` : ''}</div></div>`;
+                    return;
+                }
+                container.innerHTML += `<div class="msg ${cl}">${m.body}</div>`; 
+            }); 
+            container.scrollTop = container.scrollHeight; 
+        }
+
+        function openModal(id) { document.getElementById('modal-overlay').style.display = 'block'; document.getElementById('emoji-picker').style.display = 'none'; document.getElementById(id).style.display = 'block'; }
+        function closeAllModals() { document.getElementById('modal-overlay').style.display = 'none'; document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const picker = document.querySelector('emoji-picker');
+            if(picker) {
+                picker.addEventListener('emoji-click', event => { 
+                    const input = document.getElementById('manual-msg-input'); 
+                    input.value += event.detail.unicode; 
+                    input.focus(); 
+                });
+            }
+        });
+        
+        function toggleEmojiPicker() { 
+            const picker = document.getElementById('emoji-picker'); 
+            picker.style.display = picker.style.display === 'none' ? 'block' : 'none'; 
+        }
+        
+        function enviarMensagemManual() { 
+            const input = document.getElementById('manual-msg-input'); 
+            const msg = input.value.trim(); 
+            if(msg && contatoSelecionado) { 
+                socket.emit('enviar-mensagem-manual', { id: contatoSelecionado, mensagem: msg }); 
+                input.value = ''; 
+                document.getElementById('emoji-picker').style.display = 'none'; 
+            } 
+        }
+    </script>
+</body>
+</html>

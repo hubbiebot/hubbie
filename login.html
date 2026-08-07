@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Hubbie BOT</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #0f0f0f;
+            --sidebar-bg: #1a1a1a;
+            --accent-red: #42c506;
+            --text-main: #f1f1f1;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        body { 
+            font-family: 'Inter', 'Segoe UI', sans-serif; 
+            background: var(--bg-dark); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+            flex-direction: column; 
+            color: var(--text-main);
+        }
+        .card { 
+            background: var(--sidebar-bg); 
+            padding: 40px; 
+            border-radius: 12px; 
+            width: 320px; 
+            text-align: center; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6); 
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        h2 { color: var(--text-main); margin-top: 0; font-weight: 800; letter-spacing: -1px;}
+        h2 i { color: var(--accent-red); }
+        
+        input { 
+            width: 100%; 
+            padding: 14px; 
+            margin: 10px 0; 
+            background: var(--glass);
+            border: 1px solid rgba(255,255,255,0.1); 
+            border-radius: 8px; 
+            box-sizing: border-box; 
+            color: white;
+            outline: none;
+        }
+        input:focus { border-color: var(--accent-red); }
+        
+        button { 
+            width: 100%; 
+            padding: 14px; 
+            background: var(--accent-red); 
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            font-size: 15px; 
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+        button:hover { filter: brightness(1.2); }
+        
+        #qr-container { margin-top: 25px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 25px; min-height: 200px; display: flex; flex-direction: column; align-items: center; }
+        canvas { border: 5px solid white; border-radius: 8px; }
+        
+        .version { position: fixed; bottom: 15px; right: 20px; color: var(--text-main); font-size: 11px; opacity: 0.3; }
+        .status-ready { color: white; font-weight: bold; background: var(--accent-red); padding: 12px; border-radius: 8px; width: 100%; box-sizing: border-box;}
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2><i class="fas fa-bolt"></i> Hubbie BOT</h2>
+        <form action="/auth" method="POST">
+            <input type="text" name="usuario" placeholder="Usuário Admin" required>
+            <input type="password" name="senha" placeholder="Senha" required>
+            <button type="submit">ENTRAR NO SISTEMA</button>
+        </form>
+        
+        <div id="qr-container">
+            <p id="qr-status" style="font-size: 12px; color: #888;">Aguardando geração do QR Code...</p>
+            <canvas id="qrcode-canvas" style="display: none;"></canvas>
+        </div>
+    </div>
+    
+    <div class="version">BUILD V.00.03</div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const canvas = document.getElementById('qrcode-canvas');
+        const status = document.getElementById('qr-status');
+
+        socket.on('qr', qr => {
+            status.innerText = "Escaneie no WhatsApp para conectar:";
+            canvas.style.display = 'block';
+            new QRious({
+                element: canvas,
+                value: qr,
+                size: 180
+            });
+        });
+
+        socket.on('ready', () => {
+            document.getElementById('qr-container').innerHTML = `
+                <div class="status-ready">
+                    <i class="fas fa-check-circle"></i> Sistema Conectado!
+                </div>`;
+        });
+    </script>
+</body>
+</html>
