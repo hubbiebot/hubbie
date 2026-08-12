@@ -290,9 +290,17 @@ Checkpoint: Angular continua apenas em URL interna; legado é a operação padr�
 - Create: `apps/web/src/app/core/auth/auth.interceptor.spec.ts`
 - Create: `apps/web/src/app/core/auth/auth.guard.ts`
 - Create: `apps/web/src/app/core/auth/permission.guard.ts`
-- Create: `apps/web/src/app/features/auth/login/`
-- Create: `apps/web/src/app/features/auth/change-credentials/`
-- Modify: `apps/web/src/app/layout/app-shell.component.*`
+- Create: `apps/web/src/app/features/auth/login/login.component.ts`
+- Create: `apps/web/src/app/features/auth/login/login.component.html`
+- Create: `apps/web/src/app/features/auth/login/login.component.scss`
+- Create: `apps/web/src/app/features/auth/login/login.component.spec.ts`
+- Create: `apps/web/src/app/features/auth/change-credentials/change-credentials.component.ts`
+- Create: `apps/web/src/app/features/auth/change-credentials/change-credentials.component.html`
+- Create: `apps/web/src/app/features/auth/change-credentials/change-credentials.component.scss`
+- Create: `apps/web/src/app/features/auth/change-credentials/change-credentials.component.spec.ts`
+- Modify: `apps/web/src/app/layout/app-shell.component.ts`
+- Modify: `apps/web/src/app/layout/app-shell.component.html`
+- Modify: `apps/web/src/app/layout/app-shell.component.scss`
 - Test: `apps/web/tests/e2e/auth-session.spec.ts`
 
 **Interfaces:**
@@ -420,12 +428,26 @@ Checkpoint: fault injection confirma que Pub/Sub perdido não perde estado.
 **Preconditions:** Task 4 revisada.
 
 **Files:**
-- Create: `apps/web/src/app/features/conversations/pages/inbox-page.component.*`
-- Create: `apps/web/src/app/features/conversations/ui/conversation-list.component.*`
-- Create: `apps/web/src/app/features/conversations/ui/timeline.component.*`
-- Create: `apps/web/src/app/features/conversations/ui/text-composer.component.*`
-- Create: `apps/web/src/app/features/conversations/ui/conversation-details.component.*`
-- Create: `apps/web/src/app/features/conversations/ui/*.spec.ts`
+- Create: `apps/web/src/app/features/conversations/pages/inbox-page.component.ts`
+- Create: `apps/web/src/app/features/conversations/pages/inbox-page.component.html`
+- Create: `apps/web/src/app/features/conversations/pages/inbox-page.component.scss`
+- Create: `apps/web/src/app/features/conversations/pages/inbox-page.component.spec.ts`
+- Create: `apps/web/src/app/features/conversations/ui/conversation-list.component.ts`
+- Create: `apps/web/src/app/features/conversations/ui/conversation-list.component.html`
+- Create: `apps/web/src/app/features/conversations/ui/conversation-list.component.scss`
+- Create: `apps/web/src/app/features/conversations/ui/conversation-list.component.spec.ts`
+- Create: `apps/web/src/app/features/conversations/ui/timeline.component.ts`
+- Create: `apps/web/src/app/features/conversations/ui/timeline.component.html`
+- Create: `apps/web/src/app/features/conversations/ui/timeline.component.scss`
+- Create: `apps/web/src/app/features/conversations/ui/timeline.component.spec.ts`
+- Create: `apps/web/src/app/features/conversations/ui/text-composer.component.ts`
+- Create: `apps/web/src/app/features/conversations/ui/text-composer.component.html`
+- Create: `apps/web/src/app/features/conversations/ui/text-composer.component.scss`
+- Create: `apps/web/src/app/features/conversations/ui/text-composer.component.spec.ts`
+- Create: `apps/web/src/app/features/conversations/ui/conversation-details.component.ts`
+- Create: `apps/web/src/app/features/conversations/ui/conversation-details.component.html`
+- Create: `apps/web/src/app/features/conversations/ui/conversation-details.component.scss`
+- Create: `apps/web/src/app/features/conversations/ui/conversation-details.component.spec.ts`
 - Create: `apps/web/src/app/features/conversations/data/draft.store.ts`
 - Test: `apps/web/tests/e2e/conversations-text.spec.ts`
 - Modify: `apps/web/src/app/features/conversations/conversations.routes.ts`
@@ -487,11 +509,20 @@ intencionais antes de habilitar `/app/conversas`.
 - Create: `apps/web/src/app/features/media/data/media.models.ts`
 - Create: `apps/web/src/app/features/media/data/media.facade.ts`
 - Create: `apps/web/src/app/features/media/data/object-url.registry.ts`
-- Create: `apps/web/src/app/features/media/data/*.spec.ts`
-- Create: `apps/web/src/app/features/media/ui/media-bubble.component.*`
-- Create: `apps/web/src/app/features/media/ui/upload-dialog.component.*`
-- Create: `apps/web/src/app/features/media/ui/audio-recorder.component.*`
-- Create: `apps/web/src/app/features/media/ui/*.spec.ts`
+- Create: `apps/web/src/app/features/media/data/media.facade.spec.ts`
+- Create: `apps/web/src/app/features/media/data/object-url.registry.spec.ts`
+- Create: `apps/web/src/app/features/media/ui/media-bubble.component.ts`
+- Create: `apps/web/src/app/features/media/ui/media-bubble.component.html`
+- Create: `apps/web/src/app/features/media/ui/media-bubble.component.scss`
+- Create: `apps/web/src/app/features/media/ui/media-bubble.component.spec.ts`
+- Create: `apps/web/src/app/features/media/ui/upload-dialog.component.ts`
+- Create: `apps/web/src/app/features/media/ui/upload-dialog.component.html`
+- Create: `apps/web/src/app/features/media/ui/upload-dialog.component.scss`
+- Create: `apps/web/src/app/features/media/ui/upload-dialog.component.spec.ts`
+- Create: `apps/web/src/app/features/media/ui/audio-recorder.component.ts`
+- Create: `apps/web/src/app/features/media/ui/audio-recorder.component.html`
+- Create: `apps/web/src/app/features/media/ui/audio-recorder.component.scss`
+- Create: `apps/web/src/app/features/media/ui/audio-recorder.component.spec.ts`
 - Test: `apps/web/tests/e2e/media.spec.ts`
 
 **Interfaces:**

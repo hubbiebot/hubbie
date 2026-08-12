@@ -6,7 +6,7 @@
 
 ## 1. Resumo executivo
 
-O front-end atual concentra marcação, estilos, estado, integração Socket.IO e regras de interface em um único `index.html`. A migração criará um painel Angular separado em `frontend/` e substituirá o legado por fatias verticais, sem exigir uma virada única.
+O front-end atual concentra marcação, estilos, estado, integração Socket.IO e regras de interface em um único `index.html`. A migração criará um painel Angular separado em `apps/web/` e substituirá o legado por fatias verticais, sem exigir uma virada única.
 
 A estratégia combina:
 
@@ -16,7 +16,8 @@ A estratégia combina:
 - componentes standalone e predominantemente stateless;
 - lazy loading por feature;
 - Signals para estado síncrono e RxJS nas fronteiras assíncronas;
-- adapter para preservar o contrato Socket.IO atual;
+- adapters temporários apenas para caracterização do legado; as fatias Angular
+  entram em produção sobre REST/Socket.IO versionados do novo backend;
 - tema claro, Segoe UI Variable, Tailwind e ícones Lucide;
 - testes unitários, de componentes, contrato, integração, acessibilidade, visuais e E2E.
 
@@ -31,15 +32,13 @@ O repositório contém um servidor Node/Express com Socket.IO e duas páginas le
 
 O legado depende de variáveis globais, handlers inline, manipulação direta do DOM, CSS embutido e interpolação de HTML. O servidor mantém dados em memória e arquivos JSON e expõe os comportamentos do painel principalmente por eventos Socket.IO.
 
-Outro agente é responsável pela evolução do backend. O front-end não alterará implementações internas do servidor; qualquer extensão de contrato será descrita e coordenada separadamente.
-
-As duas frentes usam o mesmo diretório de documentação, mas arquivos diferentes: este documento cobre exclusivamente o front-end; o agente do backend mantém `docs/specs/backend-migration-design.md`. Mudanças de contrato devem ser refletidas nos dois documentos e comprovadas pelas mesmas fixtures.
+O backend é governado por `docs/specs/SPEC-000-arquitetura-migracao.md` e pelas tasks em `docs/specs/backend/`. O front-end não alterará implementações internas do servidor; mudanças de contrato devem aparecer nas specs das duas frentes e usar as mesmas fixtures OpenAPI/eventos.
 
 ## 3. Objetivos
 
 1. Migrar todo o painel para Angular 22 sem interromper a operação atual.
 2. Melhorar usabilidade, consistência, responsividade e acessibilidade.
-3. Preservar o Socket.IO existente durante a transição.
+3. Preservar o painel legado até o contrato versionado equivalente estar estável.
 4. Separar apresentação, estado, regras de interface e transporte.
 5. Suportar mensagens de texto, imagem, arquivo e áudio com estados verdadeiros.
 6. Substituir o disparo baseado apenas em texto livre por seleção de conversas e entrada estruturada de números.
@@ -71,7 +70,7 @@ As duas frentes usam o mesmo diretório de documentação, mas arquivos diferent
 | Assíncrono | RxJS no Socket.IO, uploads e demais operações externas |
 | Formulários | Reactive Forms |
 | Rotas | Lazy loading por feature |
-| Transporte inicial | Socket.IO legado, isolado por adapter |
+| Transporte | Adapter legado durante Strangler; REST + Socket.IO versionado no destino |
 | Testes unitários | Vitest e Angular TestBed |
 | Testes E2E/visuais | Playwright |
 | Estratégia | Strangler Fig, SDD, Golden Master e cortes Pareto |
@@ -99,20 +98,20 @@ Durante a transição:
 ```text
 Navegador
    |
-   +-- /login -----------------> autenticação compatível
+   +-- /login -----------------> JWT em memória + refresh HttpOnly
    +-- /app/* -----------------> Angular 22
    +-- /legacy ----------------> painel HTML atual
                                   |
-Angular --------------------------+-- Socket.IO/HTTP no mesmo domínio
+Angular --------------------------+-- REST/Socket.IO no mesmo domínio
                                          |
                                          +-- backend Node/Express
 ```
 
 Regras:
 
-- o workspace Angular ficará em `frontend/`, com dependências e scripts próprios;
+- o workspace Angular ficará em `apps/web/`, no mesmo monorepo e com build próprio;
 - o build será servido pelo Express sob `/app` durante a migração; a configuração da rota e do fallback SPA pertence ao agente do backend e será validada pelo contrato compartilhado;
-- a sessão continuará baseada no cookie HTTP-only do servidor;
+- o access JWT de 20 minutos ficará somente em memória; o refresh token permanecerá em cookie HTTP-only;
 - `/legacy` permanecerá protegido pela mesma autenticação;
 - cada feature terá uma flag de ativação e um link de retorno ao legado;
 - depois do último corte, o Angular assumirá `/` e `/legacy` será removido em uma entrega separada e reversível.
@@ -136,7 +135,7 @@ O shell e os serviços essenciais serão o único código carregado inicialmente
 ## 9. Organização do workspace
 
 ```text
-frontend/
+apps/web/
   src/
     app/
       core/
@@ -409,13 +408,13 @@ As extensões do backend deverão acrescentar correlação por `clientMessageId`
 - URLs de mídia são criadas e revogadas de forma controlada;
 - tipos e tamanhos de arquivo são verificados antes da conversão ou upload;
 - dependências de CDN do legado são substituídas por pacotes versionados no build;
-- autenticação permanece em cookie HTTP-only; credenciais não são copiadas para local storage;
+- access JWT permanece em memória e refresh em cookie HTTP-only; nenhum token é copiado para local/session storage;
 - logs não armazenam corpo integral de conversas ou mídia;
 - qualquer HTML rico futuro exigirá sanitização e especificação próprias.
 
 ## 20. Processo SDD
 
-Cada fatia vertical terá uma especificação antes da implementação em `docs/specs/`, com prefixo `frontend-`. A especificação contém:
+Cada fatia vertical terá uma especificação `FE-*` antes da implementação em `docs/specs/frontend/`. A especificação contém:
 
 1. objetivo e limite da fatia;
 2. comportamento legado observado;
@@ -561,7 +560,7 @@ Uma fatia está pronta quando:
 | Status de mensagem enganoso | renderizar apenas confirmação comprovada |
 | Disparo acidental ou duplicado | deduplicação, confirmação e bloqueio durante submissão |
 | Regressão visual dependente do ambiente | browser, SO, fonte, dados e relógio fixos |
-| Conflito com trabalho do backend | workspace `frontend/` e mudanças de contrato coordenadas |
+| Conflito com trabalho do backend | workspace `apps/web/` e mudanças de contrato coordenadas |
 
 ## 26. Referências técnicas
 

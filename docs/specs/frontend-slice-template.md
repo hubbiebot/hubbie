@@ -2,6 +2,7 @@
 
 - Data: AAAA-MM-DD
 - Status: draft
+- ID: `FE-NNN`
 - Design pai: `docs/specs/frontend-migration-design.md`
 
 ## 1. Objetivo
