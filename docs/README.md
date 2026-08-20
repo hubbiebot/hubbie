@@ -63,3 +63,24 @@ Planejamento:
 `SPEC-000` contém decisões transversais. Specs `BE-*` e `FE-*` são unidades de
 implementação independentes, ligadas por contratos e dependências explícitas.
 Decisões futuras que mudem um design aprovado devem usar `docs/adrs/`.
+
+## Decisões arquiteturais do MVP
+
+Para a execução do MVP, as decisões originais da `SPEC-000` foram simplificadas
+conforme documentado nos ADRs abaixo. O dev/arquiteto deve ler esses documentos
+antes de implementar.
+
+- [ADR-0001 — Escopo Simplificado do MVP](adrs/0001-mvp-simplificado.md)
+- [ADR-0002 — Arquitetura Macro](adrs/0002-arquitetura-macro.md)
+- [ADR-0003 — Stack Tecnológica](adrs/0003-stack-tecnologica.md)
+- [ADR-0004 — Autenticação e Sessão](adrs/0004-autenticacao-sessao.md)
+- [ADR-0005 — Persistência e Schema](adrs/0005-persistencia-schema.md)
+- [ADR-0006 — Mensageria e Filas](adrs/0006-mensageria-filas.md)
+- [ADR-0007 — Processamento de Mídia](adrs/0007-processamento-midia.md)
+- [ADR-0008 — Deploy e Infraestrutura](adrs/0008-deploy-infraestrutura.md)
+- [ADR-0009 — Migração e Cutover](adrs/0009-migracao-cutover.md)
+
+## Diagramas
+
+Diagramas visuais do fluxo de mensagens, componentes do backend e decisões
+arquiteturais estão indexados em [`diagrams/README.md`](diagrams/README.md).
