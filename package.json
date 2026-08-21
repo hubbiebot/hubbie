@@ -1,11 +1,19 @@
 {
   "name": "bot-hubbie",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "Sistema de Atendimento IA Hubbie",
   "main": "index.js",
-  "bin": "index.js",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "start": "node index.js",
+    "api:start": "node apps/api/src/server.js",
+    "api:dev": "node --watch apps/api/src/server.js",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
     "build": "pkg . --targets node18-win-x64 --output hubbiebot.exe"
   },
   "pkg": {
