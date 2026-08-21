@@ -1,27 +1,12 @@
 <main class="login-shell">
   <section class="auth-layout">
-    <aside class="context-panel" aria-labelledby="product-title">
-      <div class="context-content">
-        <p class="product-name">Hubbie BOT</p>
-        <h1 id="product-title">Acesso operacional</h1>
-        <p class="context-copy">Entre com suas credenciais para acessar a central de atendimento.</p>
-
-        <div class="system-status" role="status">
-          <span aria-hidden="true" class="status-dot"></span>
-          <div>
-            <strong>Status do sistema</strong>
-            <p>Aguardando conexão do WhatsApp.</p>
-          </div>
-        </div>
-      </div>
-    </aside>
-
     <section class="form-panel" aria-labelledby="login-title">
       <mat-card class="login-card">
         <mat-card-content>
           <header class="brand">
-            <h2 id="login-title">Entrar</h2>
-            <p>Informe seus dados de acesso.</p>
+            <p class="wordmark">Hubbie <strong>BOT</strong></p>
+            <h1 id="login-title">Entrar</h1>
+            <p>Use seu usuário e senha para continuar.</p>
           </header>
 
           <form [formGroup]="form" (ngSubmit)="submit()" novalidate>

@@ -33,7 +33,7 @@ são armazenados somente como hash.
 ### Frontend
 
 `apps/web` usa Angular 22, componentes standalone, TypeScript strict, Reactive
-Forms e PrimeNG. A primeira rota pública é `/login`. Não haverá shell de
+Forms e Angular Material. A primeira rota pública é `/login`. Não haverá shell de
 negócio nesta fatia.
 
 A `SessionFacade` mantém o access token somente em memória. O refresh token é
@@ -71,7 +71,7 @@ existem.
 
 ## Experiência de login
 
-O formulário PrimeNG usa Reactive Forms com validação de campos obrigatórios e
+O formulário Angular Material usa Reactive Forms com validação de campos obrigatórios e
 limites de tamanho. A senha permanece oculta, o botão fica indisponível durante
 o envio e erros são anunciados de forma acessível sem confirmar a existência da
 conta. Após login com credencial temporária, a navegação é forçada para a troca

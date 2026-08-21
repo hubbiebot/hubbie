@@ -7,7 +7,7 @@
 > syntax for tracking.
 
 **Goal:** replace the legacy login with a secure API authentication flow and an
-Angular 22 + PrimeNG login application that requires every user to sign in again.
+Angular 22 + Angular Material login application that requires every user to sign in again.
 
 **Architecture:** MySQL stores users and hashed refresh-token families. The
 Express `auth` module keeps route, controller, service and repository concerns
@@ -15,7 +15,7 @@ separate; policies enforce authorization on the server. Angular holds only the
 short-lived access token in memory, while refresh is an `HttpOnly` cookie.
 
 **Tech Stack:** Node.js ESM, Express 5, MySQL 8, TypeORM EntitySchema, Argon2id,
-`jose`, Redis rate limiting, Angular 22, TypeScript strict, PrimeNG, Reactive
+`jose`, Redis rate limiting, Angular 22, TypeScript strict, Angular Material, Reactive
 Forms, Vitest, Supertest and Playwright.
 
 ## Global Constraints
@@ -57,13 +57,13 @@ Forms, Vitest, Supertest and Playwright.
 - `/app` is a protected empty page, not a business dashboard.
 
 - [ ] **Step 1: Scaffold Angular with standalone components, routing, strict
-  TypeScript and Vitest; add PrimeNG and its theme provider.**
+  TypeScript and Vitest; add Angular Material and animations.**
 
-  The application bootstrap must provide HTTP client, router and PrimeNG:
+  The application bootstrap must provide HTTP client, router and animations:
 
   ```ts
   bootstrapApplication(AppComponent, {
-    providers: [provideRouter(routes), provideHttpClient(), providePrimeNG()]
+    providers: [provideRouter(routes), provideHttpClient(), provideAnimationsAsync()]
   });
   ```
 
@@ -321,7 +321,7 @@ Forms, Vitest, Supertest and Playwright.
 
 ---
 
-### Task 7: Deliver the PrimeNG login and initial-credential pages
+### Task 7: Deliver the Angular Material login and initial-credential pages
 
 **Files:**
 - Modify: `apps/web/src/app/features/login/login.page.ts`
@@ -347,8 +347,8 @@ Forms, Vitest, Supertest and Playwright.
   expect(screen.getByRole('button', { name: /entrar/i })).toBeDisabled();
   ```
 
-- [ ] **Step 2: Implement PrimeNG `InputText`, `Password`, `Button` and inline
-  message components with Reactive Forms. Use labels, live error regions and
+- [ ] **Step 2: Implement Angular Material `MatInput`, `MatFormField`,
+  `MatButton` and inline error components with Reactive Forms. Use labels, live error regions and
   neutral server-error copy.**
 
 - [ ] **Step 3: Add Playwright coverage for valid login, invalid credentials,
