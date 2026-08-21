@@ -1,2 +1,4 @@
 .superpowers/
 node_modules/
+apps/web/.angular/
+apps/web/dist/

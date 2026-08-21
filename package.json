@@ -12,6 +12,8 @@
     "start": "node index.js",
     "api:start": "node apps/api/src/server.js",
     "api:dev": "node --watch apps/api/src/server.js",
+    "web:start": "npm run start -w @hubbie/web",
+    "web:build": "npm run build -w @hubbie/web",
     "test": "npm run test --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
     "build": "pkg . --targets node18-win-x64 --output hubbiebot.exe"
