@@ -1,16 +1,22 @@
-import { createServer } from 'node:http';
-import { fileURLToPath } from 'node:url';
-import { createApp } from './app.js';
+import { createServer } from "node:http";
+import { fileURLToPath } from "node:url";
+import { createLogger } from "@hubbie/shared/logging";
+import { createApp } from "./app.js";
 
-export async function startServer({ config, logger, readiness, onStopping = () => {} }) {
+export async function startServer({
+  config,
+  logger,
+  readiness,
+  onStopping = () => {},
+}) {
   const app = createApp({ config, logger, readiness });
   const httpServer = createServer(app);
   let closePromise;
 
   await new Promise((resolve, reject) => {
-    httpServer.once('error', reject);
+    httpServer.once("error", reject);
     httpServer.listen(config.port, () => {
-      httpServer.off('error', reject);
+      httpServer.off("error", reject);
       resolve();
     });
   });
@@ -43,21 +49,20 @@ export async function startServer({ config, logger, readiness, onStopping = () =
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  const { loadConfig } = await import('@hubbie/shared/config');
+  const { loadConfig } = await import("@hubbie/shared/config");
   const config = loadConfig(process.env);
-  const logger = {
-    info: (message, metadata = {}) => console.log(JSON.stringify({ level: 'info', message, ...metadata })),
-    error: (message, metadata = {}) => console.error(JSON.stringify({ level: 'error', message, ...metadata }))
-  };
+  const logger = createLogger();
   let acceptingTraffic = true;
   const server = await startServer({
     config,
     logger,
     readiness: async () => ({ ready: acceptingTraffic }),
-    onStopping: () => { acceptingTraffic = false; }
+    onStopping: () => {
+      acceptingTraffic = false;
+    },
   });
 
-  for (const signal of ['SIGINT', 'SIGTERM']) {
+  for (const signal of ["SIGINT", "SIGTERM"]) {
     process.once(signal, async () => {
       await server.close();
       process.exit(0);

@@ -1,13 +1,13 @@
-const ENVIRONMENTS = new Set(['development', 'test', 'production']);
+const ENVIRONMENTS = new Set(["development", "test", "production"]);
 
 function configError() {
-  return new Error('CONFIG_INVALID');
+  return new Error("CONFIG_INVALID");
 }
 
 function parseOrigins(value) {
-  if (typeof value !== 'string' || value.trim() === '') throw configError();
+  if (typeof value !== "string" || value.trim() === "") throw configError();
 
-  return value.split(',').map((origin) => {
+  return value.split(",").map((origin) => {
     const normalized = origin.trim();
     let parsed;
     try {
@@ -16,7 +16,10 @@ function parseOrigins(value) {
       throw configError();
     }
 
-    if (!['http:', 'https:'].includes(parsed.protocol) || parsed.origin !== normalized) {
+    if (
+      !["http:", "https:"].includes(parsed.protocol) ||
+      parsed.origin !== normalized
+    ) {
       throw configError();
     }
 
@@ -38,7 +41,12 @@ export function loadConfig(source) {
   const port = Number(source.PORT);
   const shutdownTimeoutMs = parseShutdownTimeout(source.SHUTDOWN_TIMEOUT_MS);
 
-  if (!ENVIRONMENTS.has(env) || !Number.isInteger(port) || port < 1 || port > 65535) {
+  if (
+    !ENVIRONMENTS.has(env) ||
+    !Number.isInteger(port) ||
+    port < 1 ||
+    port > 65535
+  ) {
     throw configError();
   }
 
@@ -46,6 +54,6 @@ export function loadConfig(source) {
     env,
     port,
     allowedOrigins: Object.freeze(parseOrigins(source.ALLOWED_ORIGINS)),
-    shutdownTimeoutMs
+    shutdownTimeoutMs,
   });
 }

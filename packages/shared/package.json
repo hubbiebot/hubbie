@@ -4,7 +4,9 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./config": "./src/config/load-config.js"
+    "./config": "./src/config/load-config.js",
+    "./logging": "./src/logging/logger.js",
+    "./runtime": "./src/runtime/run-worker-process.js"
   },
   "scripts": {
     "test": "vitest run",

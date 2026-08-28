@@ -1,8 +1,8 @@
-import { randomUUID } from 'node:crypto';
+import { randomUUID } from "node:crypto";
 
 export function requestIdMiddleware(request, response, next) {
-  const requestId = request.get('x-request-id') || randomUUID();
+  const requestId = request.get("x-request-id") || randomUUID();
   request.id = requestId;
-  response.setHeader('X-Request-Id', requestId);
+  response.setHeader("X-Request-Id", requestId);
   next();
 }
