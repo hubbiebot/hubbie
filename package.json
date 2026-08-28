@@ -1,11 +1,29 @@
 {
   "name": "bot-hubbie",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "Sistema de Atendimento IA Hubbie",
   "main": "index.js",
-  "bin": "index.js",
+  "private": true,
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "start": "node index.js",
+    "api:start": "node apps/api/src/server.js",
+    "api:dev": "node --watch apps/api/src/server.js",
+    "worker:start": "npm run start -w @hubbie/worker",
+    "worker:dev": "npm run dev -w @hubbie/worker",
+    "media-worker:start": "npm run start -w @hubbie/media-worker",
+    "media-worker:dev": "npm run dev -w @hubbie/media-worker",
+    "web:start": "npm run start -w @hubbie/web",
+    "web:build": "npm run build -w @hubbie/web",
+    "format:check": "prettier --check \"apps/api/**/*.{js,json}\" \"apps/worker/**/*.{js,json}\" \"apps/media-worker/**/*.{js,json}\" \"packages/**/*.js\" \"packages/**/*.json\" \"eslint.config.mjs\" \"package.json\"",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
     "build": "pkg . --targets node18-win-x64 --output hubbiebot.exe"
   },
   "pkg": {
@@ -18,6 +36,9 @@
   },
   "author": "Arthur Costa",
   "license": "ISC",
+  "devDependencies": {
+    "prettier": "^3.9.6"
+  },
   "dependencies": {
     "dotenv": "^16.6.1",
     "express": "^4.22.1",

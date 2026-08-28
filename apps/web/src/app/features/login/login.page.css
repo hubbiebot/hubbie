@@ -1,0 +1,105 @@
+:host {
+  display: block;
+  min-height: 100%;
+}
+
+.login-shell {
+  background: var(--color-bg);
+  box-sizing: border-box;
+  color: #f1f1f1;
+  min-height: 100dvh;
+  position: relative;
+  font-family: var(--font-sans);
+}
+
+.login-shell::before {
+  background: linear-gradient(180deg, transparent, rgb(66 197 6 / 45%), transparent);
+  content: '';
+  height: 46dvh;
+  left: 0;
+  position: absolute;
+  top: 27dvh;
+  width: 2px;
+}
+
+.auth-layout { display: grid; grid-template-columns: 1fr minmax(360px, 420px) minmax(8rem, 18vw); min-height: 100dvh; }
+
+.form-panel { align-items: center; display: flex; grid-column: 2; padding: var(--space-4) 0; }
+.login-card {
+  background: var(--color-surface);
+  border: 1px solid rgb(255 255 255 / 8%);
+  border-radius: var(--radius-surface);
+  box-shadow: var(--elevation-2);
+  max-width: 400px;
+  padding: var(--space-4);
+  width: 100%;
+}
+
+.brand {
+  margin: 0 0 var(--space-3);
+}
+
+.wordmark { color: #d7d7d7; font-size: 0.92rem; font-weight: 600; letter-spacing: -0.02rem; margin: 0 0 var(--space-3); }
+.wordmark strong { color: var(--color-primary); font-weight: 700; }
+
+.brand h1 {
+  color: var(--color-text);
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.02rem;
+  margin: 0;
+}
+
+.brand > p:not(.wordmark) { color: var(--color-muted); font-size: 0.82rem; margin: 0.35rem 0 0; }
+
+form, mat-form-field { display: block; width: 100%; }
+
+mat-form-field { margin-bottom: var(--space-1); }
+
+:host ::ng-deep .mat-mdc-form-field-subscript-wrapper { min-height: 1.2rem; }
+:host ::ng-deep .mat-mdc-text-field-wrapper { background: rgb(255 255 255 / 4%); transition: background 180ms ease, box-shadow 180ms ease; }
+:host ::ng-deep .mdc-notched-outline__leading,
+:host ::ng-deep .mdc-notched-outline__notch,
+:host ::ng-deep .mdc-notched-outline__trailing { border-color: rgb(255 255 255 / 18%) !important; transition: border-color 180ms ease; }
+:host ::ng-deep .mdc-text-field--focused .mdc-notched-outline__leading,
+:host ::ng-deep .mdc-text-field--focused .mdc-notched-outline__notch,
+:host ::ng-deep .mdc-text-field--focused .mdc-notched-outline__trailing { border-color: #42c506 !important; }
+:host ::ng-deep .mat-mdc-input-element,
+:host ::ng-deep .mat-mdc-floating-label { color: #f1f1f1 !important; }
+:host ::ng-deep .mdc-text-field--focused .mat-mdc-floating-label { color: var(--color-focus) !important; }
+:host ::ng-deep .mat-mdc-text-field-wrapper:focus-within { box-shadow: var(--focus-ring); }
+
+button[mat-flat-button] {
+  --mat-sys-primary: var(--color-primary);
+  --mat-sys-on-primary: #fff;
+  border-radius: var(--radius-control);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.035rem;
+  min-height: 48px;
+  transition: filter 160ms ease, transform 160ms ease;
+  width: 100%;
+}
+
+button[mat-flat-button]:not(:disabled):hover { filter: brightness(1.12); transform: translateY(-1px); }
+button[mat-flat-button]:disabled { opacity: 0.45; }
+button[mat-flat-button]:focus-visible { box-shadow: var(--focus-ring); outline: none; }
+
+.form-actions {
+  background: var(--color-surface);
+  bottom: 0;
+  padding-top: var(--space-1);
+  position: sticky;
+  z-index: 1;
+}
+
+.action-hint, .form-help { color: var(--color-muted); font-size: 0.75rem; line-height: 1.4; margin: var(--space-1) 0 0; }
+.form-help { border-top: 1px solid rgb(255 255 255 / 10%); margin-top: var(--space-3); padding-top: var(--space-2); }
+.build-label { bottom: 15px; color: #f1f1f1; font-size: 0.62rem; letter-spacing: 0.08rem; opacity: 0.3; position: fixed; right: 20px; }
+
+@media (max-width: 768px) {
+  .login-shell::before { height: 32dvh; top: 34dvh; }
+  .auth-layout { display: block; padding: var(--space-3); }
+  .form-panel { justify-content: center; min-height: 100dvh; padding: 0; }
+  .login-card { max-width: 420px; padding: var(--space-3); }
+}

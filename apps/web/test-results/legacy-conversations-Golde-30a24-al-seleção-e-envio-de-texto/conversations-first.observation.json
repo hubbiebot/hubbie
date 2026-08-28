@@ -1,0 +1,107 @@
+{
+  "essentialText": "Hubbie BOT IA GLOBAL: LIGADA WhatsApp: Conectado Fixture local ativa Config. da IA (Prompt) Gestão de Estoque Disparo em Massa Agendar Lembrete BLACKLIST Sair 📋 Ativas 📦 Arquivadas Conversas Ativas Add Contato Cliente Golden IA ON Cliente Golden: Olá, preciso de atendimento. Cliente Golden 🏷️ Add Tag Exportar ❌ Fechar 📦 Arquivar Olá, preciso de atendimento.",
+  "finalFocus": "input#manual-msg-input",
+  "ariaLive": [],
+  "accessibilityViolations": [
+    {
+      "id": "button-name",
+      "impact": "critical",
+      "targets": [
+        [
+          "button[onclick=\"addBlack()\"]"
+        ],
+        [
+          "button[onclick=\"enviarMensagemManual()\"]"
+        ]
+      ]
+    },
+    {
+      "id": "color-contrast",
+      "impact": "serious",
+      "targets": [
+        [
+          "#btnGlobal"
+        ],
+        [
+          ".toggle-ia"
+        ]
+      ]
+    },
+    {
+      "id": "landmark-one-main",
+      "impact": "moderate",
+      "targets": [
+        [
+          "html"
+        ]
+      ]
+    },
+    {
+      "id": "page-has-heading-one",
+      "impact": "moderate",
+      "targets": [
+        [
+          "html"
+        ]
+      ]
+    },
+    {
+      "id": "region",
+      "impact": "moderate",
+      "targets": [
+        [
+          ".brand"
+        ],
+        [
+          "#wa-status"
+        ],
+        [
+          ".section > h4"
+        ],
+        [
+          "#inBlack"
+        ],
+        [
+          "a"
+        ],
+        [
+          "#tab-title"
+        ],
+        [
+          ".search-container"
+        ],
+        [
+          ".contact-name > span"
+        ],
+        [
+          ".contact-last"
+        ],
+        [
+          "#chat-header > div:nth-child(1)"
+        ],
+        [
+          "#chat-messages"
+        ],
+        [
+          "#manual-msg-input"
+        ]
+      ]
+    }
+  ],
+  "emitted": [
+    {
+      "name": "iniciar-conversa-manual",
+      "payload": "5511999990000@c.us",
+      "order": 1
+    },
+    {
+      "name": "enviar-mensagem-manual",
+      "payload": {
+        "id": "5511999990000@c.us",
+        "mensagem": "Mensagem Golden"
+      },
+      "order": 2
+    }
+  ],
+  "screenshotHash": "55461cff4907bc9f0cbe632fb29bcda144cc40161f2ed1f3ef78a45714982c39"
+}

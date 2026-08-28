@@ -1,0 +1,19 @@
+{
+  "name": "@hubbie/shared",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./config": "./src/config/load-config.js",
+    "./logging": "./src/logging/logger.js",
+    "./runtime": "./src/runtime/run-worker-process.js"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "lint": "eslint src test"
+  },
+  "devDependencies": {
+    "eslint": "^9.24.0",
+    "vitest": "^3.0.0"
+  }
+}

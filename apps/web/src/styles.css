@@ -1,0 +1,27 @@
+@import '@angular/material/prebuilt-themes/azure-blue.css';
+
+:root {
+  --color-bg: #0f0f0f;
+  --color-surface: #181818;
+  --color-text: #f5f5f5;
+  --color-muted: #9b9b9b;
+  --color-primary: #42c506;
+  --color-focus: #70dc43;
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2rem;
+  --space-5: 2.5rem;
+  --radius-control: 0.5rem;
+  --radius-surface: 1rem;
+  --elevation-2: 0 24px 70px rgb(0 0 0 / 52%);
+  --font-sans: Inter, "Segoe UI", Arial, sans-serif;
+  --focus-ring: 0 0 0 3px rgb(112 220 67 / 45%);
+}
+
+html, body {
+  background: var(--color-bg);
+  font-family: var(--font-sans);
+  margin: 0;
+  min-height: 100%;
+}

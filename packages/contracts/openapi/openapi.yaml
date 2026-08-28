@@ -1,0 +1,76 @@
+openapi: 3.1.0
+info:
+  title: Hubbie API
+  version: 0.1.0
+  description: HTTP contract for the Hubbie MVP.
+paths:
+  /health/live:
+    get:
+      summary: Checks whether the process is alive
+      responses:
+        '200':
+          description: Process is available
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /health/ready:
+    get:
+      summary: Checks whether the API can accept traffic
+      responses:
+        '200':
+          description: API is ready
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+components:
+  schemas:
+    ProblemDetails:
+      type: object
+      required: [type, title, status, requestId]
+      properties:
+        type:
+          type: string
+          format: uri-reference
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        instance:
+          type: string
+        requestId:
+          type: string
+  responses:
+    BadRequest:
+      description: Invalid request
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    PayloadTooLarge:
+      description: Request body exceeds the permitted size
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    InternalServerError:
+      description: Unexpected server error
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    ServiceUnavailable:
+      description: Required dependency is unavailable
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'

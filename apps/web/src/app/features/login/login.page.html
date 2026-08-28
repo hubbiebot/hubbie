@@ -1,0 +1,50 @@
+<main class="login-shell">
+  <section class="auth-layout">
+    <section class="form-panel" aria-labelledby="login-title">
+      <mat-card class="login-card">
+        <mat-card-content>
+          <header class="brand">
+            <p class="wordmark">Hubbie <strong>BOT</strong></p>
+            <h1 id="login-title">Entrar</h1>
+            <p>Use seu usuário e senha para continuar.</p>
+          </header>
+
+          <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+            <mat-form-field appearance="outline">
+              <mat-label>Usuário admin</mat-label>
+              <input matInput formControlName="login" autocomplete="username" required />
+              @if (form.controls.login.touched && form.controls.login.hasError('required')) {
+                <mat-error>Informe o usuário.</mat-error>
+              } @else if (form.controls.login.touched && form.controls.login.hasError('minlength')) {
+                <mat-error>Use pelo menos 3 caracteres.</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Senha</mat-label>
+              <input matInput formControlName="password" type="password" autocomplete="current-password" required />
+              @if (form.controls.password.touched && form.controls.password.hasError('required')) {
+                <mat-error>Informe a senha.</mat-error>
+              } @else if (form.controls.password.touched && form.controls.password.hasError('minlength')) {
+                <mat-error>Use pelo menos 8 caracteres.</mat-error>
+              }
+            </mat-form-field>
+
+            <div class="form-actions">
+              <button mat-flat-button type="submit" [disabled]="form.invalid || pending()">
+                Entrar no sistema
+              </button>
+              <p class="action-hint" role="status">
+                {{ pending() ? 'A autenticação ainda não está disponível.' : 'Preencha usuário e senha para continuar.' }}
+              </p>
+            </div>
+          </form>
+
+          <p class="form-help">Precisa de acesso? Fale com um administrador.</p>
+        </mat-card-content>
+      </mat-card>
+    </section>
+  </section>
+
+  <small class="build-label">BUILD V.00.03</small>
+</main>

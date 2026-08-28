@@ -1,0 +1,6 @@
+interface:
+  display_name: "Code Review and Commit"
+  short_description: "Reviews changes and prepares safe commits"
+  default_prompt: "Use $code-review-commit to review and commit this change."
+policy:
+  allow_implicit_invocation: true

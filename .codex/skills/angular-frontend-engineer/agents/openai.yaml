@@ -1,0 +1,6 @@
+interface:
+  display_name: "Angular Front-end Engineer"
+  short_description: "Builds accessible Angular Material interfaces"
+  default_prompt: "Use $angular-frontend-engineer to implement this Angular interface."
+policy:
+  allow_implicit_invocation: true

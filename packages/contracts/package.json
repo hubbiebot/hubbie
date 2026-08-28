@@ -1,0 +1,15 @@
+{
+  "name": "@hubbie/contracts",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "lint": "eslint test"
+  },
+  "devDependencies": {
+    "eslint": "^9.24.0",
+    "vitest": "^3.0.0",
+    "yaml": "^2.7.1"
+  }
+}
