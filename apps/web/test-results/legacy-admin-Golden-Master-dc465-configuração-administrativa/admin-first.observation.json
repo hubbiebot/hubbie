@@ -1,0 +1,84 @@
+{
+  "essentialText": "Hubbie BOT IA GLOBAL: LIGADA WhatsApp: Conectado Fixture local ativa Config. da IA (Prompt) Gestão de Estoque Disparo em Massa Agendar Lembrete BLACKLIST Sair 📋 Ativas 📦 Arquivadas Conversas Ativas Add Contato Selecione um contato Nenhuma conversa selecionada Clique em um contato na lista ao lado para começar",
+  "finalFocus": "body#",
+  "ariaLive": [],
+  "accessibilityViolations": [
+    {
+      "id": "button-name",
+      "impact": "critical",
+      "targets": [
+        [
+          "button[onclick=\"addBlack()\"]"
+        ]
+      ]
+    },
+    {
+      "id": "color-contrast",
+      "impact": "serious",
+      "targets": [
+        [
+          "#btnGlobal"
+        ]
+      ]
+    },
+    {
+      "id": "landmark-one-main",
+      "impact": "moderate",
+      "targets": [
+        [
+          "html"
+        ]
+      ]
+    },
+    {
+      "id": "page-has-heading-one",
+      "impact": "moderate",
+      "targets": [
+        [
+          "html"
+        ]
+      ]
+    },
+    {
+      "id": "region",
+      "impact": "moderate",
+      "targets": [
+        [
+          ".brand"
+        ],
+        [
+          "#wa-status"
+        ],
+        [
+          ".section > h4"
+        ],
+        [
+          "#inBlack"
+        ],
+        [
+          "a"
+        ],
+        [
+          "#tab-title"
+        ],
+        [
+          ".search-container"
+        ],
+        [
+          "#chat-header > div:nth-child(1)"
+        ],
+        [
+          "#chat-messages"
+        ]
+      ]
+    }
+  ],
+  "emitted": [
+    {
+      "name": "salvar-config-prompt",
+      "payload": "Prompt Golden atualizado.",
+      "order": 1
+    }
+  ],
+  "screenshotHash": "7adc21efbb7c136bb912ce4006515d4b75d552886d98cbbffd37b8dc4772f319"
+}

@@ -1,0 +1,63 @@
+{
+  "essentialText": "Hubbie BOT ENTRAR NO SISTEMA Sistema Conectado! BUILD V.00.03",
+  "finalFocus": "body#",
+  "ariaLive": [],
+  "accessibilityViolations": [
+    {
+      "id": "color-contrast",
+      "impact": "serious",
+      "targets": [
+        [
+          "button"
+        ],
+        [
+          ".status-ready"
+        ],
+        [
+          ".version"
+        ]
+      ]
+    },
+    {
+      "id": "landmark-one-main",
+      "impact": "moderate",
+      "targets": [
+        [
+          "html"
+        ]
+      ]
+    },
+    {
+      "id": "page-has-heading-one",
+      "impact": "moderate",
+      "targets": [
+        [
+          "html"
+        ]
+      ]
+    },
+    {
+      "id": "region",
+      "impact": "moderate",
+      "targets": [
+        [
+          "h2"
+        ],
+        [
+          "input[type=\"text\"]"
+        ],
+        [
+          "input[type=\"password\"]"
+        ],
+        [
+          "#qr-container"
+        ],
+        [
+          ".version"
+        ]
+      ]
+    }
+  ],
+  "emitted": [],
+  "screenshotHash": "e44b6588e98b12b1bcc62ee85a4c8428ac11a3058350cd49cf367e4173db5195"
+}
