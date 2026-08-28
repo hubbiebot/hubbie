@@ -1,0 +1,6 @@
+interface:
+  display_name: "QA Validation"
+  short_description: "Validates quality, security and performance"
+  default_prompt: "Use $qa-validation to validate this change end to end."
+policy:
+  allow_implicit_invocation: true
